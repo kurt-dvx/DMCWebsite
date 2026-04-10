@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   const links = [
+    { name: "Homepage", url: "https://uwi-dmc.web.app"},
     { name: "Instagram", url: "https://instagram.com/uwi.dmc" },
     { name: "Sign Up", url: "https://forms.gle/29ztVhgrcbVVGQSg7" },
     { name: "WhatsApp", url: "https://chat.whatsapp.com/IzD0D1VC0pGG8YFCtd6FIr" },
@@ -28,7 +29,7 @@ const Footer = () => {
             </a>
           ))}
           <Link to="/vote" className="hover:text-pink-400 transition">
-            Voting Page
+            Registration check
           </Link>
         </div>
         <small className="block text-gray-400">

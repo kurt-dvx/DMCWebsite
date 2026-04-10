@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 
@@ -35,9 +36,21 @@ const VotingPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 to-pink-800 p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-purple-900 to-pink-800 p-4">
+      {/* Breadcrumb */}
+      <div className="w-full max-w-md mb-4">
+        <nav className="text-white/70 text-sm">
+          <Link to="/" className="hover:text-white hover:underline transition">
+            Home
+          </Link>
+          <span className="mx-2">/</span>
+          <span className="text-white">Status</span>
+        </nav>
+      </div>
+
+      {/* Main Card */}
       <div className="frosted-glass max-w-md w-full text-white p-8">
-        <h2 className="text-3xl font-bold text-center mb-2">Voter Check</h2>
+        <h2 className="text-3xl font-bold text-center mb-2">Registration Check</h2>
         <p className="text-center text-white/80 mb-6">Enter your UWI Student ID</p>
 
         <input
@@ -80,7 +93,7 @@ const VotingPage = () => {
         )}
 
         <p className="text-xs text-white/50 text-center mt-8">
-          Connected to Firestore · students collection
+          List updated daily.
         </p>
       </div>
     </div>

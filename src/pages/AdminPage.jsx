@@ -7,6 +7,7 @@ import {
   doc,
   setDoc,
   deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 
 const ALLOWED_EMAILS = [
@@ -20,6 +21,7 @@ const AdminPage = () => {
   const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const [newFaculty, setNewFaculty] = useState("");
+  const [editingId, setEditingId] = useState(null); // track which student is being edited
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -70,7 +72,15 @@ const AdminPage = () => {
     setStudents([]);
   };
 
-  const handleAdd = async (e) => {
+  const resetForm = () => {
+    setNewId("");
+    setNewName("");
+    setNewEmail("");
+    setNewFaculty("");
+    setEditingId(null);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!newId.trim()) {
       setError("Student ID is required.");
@@ -78,33 +88,59 @@ const AdminPage = () => {
     }
     setError("");
     setSuccess("");
+
+    const studentData = {
+      name: newName.trim() || "—",
+      email: newEmail.trim() || "—",
+      faculty: newFaculty.trim() || "—",
+    };
+
     try {
-      await setDoc(doc(db, "students", newId.trim()), {
-        name: newName.trim() || "—",
-        email: newEmail.trim() || "—",
-        faculty: newFaculty.trim() || "—",
-        addedAt: new Date().toISOString(),
-      });
-      setNewId("");
-      setNewName("");
-      setNewEmail("");
-      setNewFaculty("");
-      setSuccess(`Added ${newId}`);
+      if (editingId) {
+        // Update existing student (ID cannot be changed)
+        await updateDoc(doc(db, "students", editingId), {
+          ...studentData,
+          updatedAt: new Date().toISOString(),
+        });
+        setSuccess(`Updated ${editingId}`);
+      } else {
+        // Add new student
+        await setDoc(doc(db, "students", newId.trim()), {
+          ...studentData,
+          addedAt: new Date().toISOString(),
+        });
+        setSuccess(`Added ${newId}`);
+      }
+      resetForm();
       loadStudents();
     } catch (err) {
       console.error(err);
       if (err.code === "permission-denied") {
-        setError("❌ Permission denied. Your email is not authorized to add students.");
+        setError("❌ Permission denied. Your email is not authorized.");
       } else {
-        setError("Failed to add student. Please try again.");
+        setError("Failed to save student. Please try again.");
       }
     }
+  };
+
+  const handleEdit = (student) => {
+    setNewId(student.id);
+    setNewName(student.name || "");
+    setNewEmail(student.email || "");
+    setNewFaculty(student.faculty || "");
+    setEditingId(student.id);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleCancelEdit = () => {
+    resetForm();
   };
 
   const handleDelete = async (id) => {
     if (!window.confirm(`Delete ${id}?`)) return;
     try {
       await deleteDoc(doc(db, "students", id));
+      if (editingId === id) resetForm();
       setSuccess(`Deleted ${id}`);
       loadStudents();
     } catch (err) {
@@ -177,40 +213,50 @@ const AdminPage = () => {
           </button>
         </div>
 
-        {/* Add form with Email field */}
-        <form onSubmit={handleAdd} className="mb-8 flex flex-wrap items-end justify-center gap-3">
-        <input
+        {/* Form with Edit capability */}
+        <form onSubmit={handleSubmit} className="mb-8 flex flex-wrap items-end justify-center gap-3">
+          <input
             type="text"
             value={newId}
             onChange={(e) => setNewId(e.target.value)}
             placeholder="Student ID *"
             className="flex-1 min-w-[160px] px-4 py-2 bg-white/10 border border-white/30 rounded-full text-white placeholder-white/50"
             required
-        />
-        <input
+            disabled={!!editingId}
+          />
+          <input
             type="text"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             placeholder="Full Name"
             className="flex-1 min-w-[160px] px-4 py-2 bg-white/10 border border-white/30 rounded-full text-white placeholder-white/50"
-        />
-        <input
+          />
+          <input
             type="email"
             value={newEmail}
             onChange={(e) => setNewEmail(e.target.value)}
             placeholder="Email"
             className="flex-1 min-w-[160px] px-4 py-2 bg-white/10 border border-white/30 rounded-full text-white placeholder-white/50"
-        />
-        <input
+          />
+          <input
             type="text"
             value={newFaculty}
             onChange={(e) => setNewFaculty(e.target.value)}
             placeholder="Faculty (e.g. FST)"
             className="flex-1 min-w-[160px] px-4 py-2 bg-white/10 border border-white/30 rounded-full text-white placeholder-white/50"
-        />
-        <button type="submit" className="btn-magenta px-6 py-2 whitespace-nowrap">
-            Add Student
-        </button>
+          />
+          <button type="submit" className="btn-magenta px-6 py-2 whitespace-nowrap">
+            {editingId ? "Update Student" : "Add Student"}
+          </button>
+          {editingId && (
+            <button
+              type="button"
+              onClick={handleCancelEdit}
+              className="bg-white/20 hover:bg-white/30 px-6 py-2 rounded-full whitespace-nowrap"
+            >
+              Cancel
+            </button>
+          )}
         </form>
 
         {error && <p className="text-red-300 mb-4">{error}</p>}
@@ -250,7 +296,13 @@ const AdminPage = () => {
                       <td className="py-3 px-2 text-xs opacity-60">
                         {s.addedAt ? new Date(s.addedAt).toLocaleDateString() : "—"}
                       </td>
-                      <td className="py-3 px-2 text-right">
+                      <td className="py-3 px-2 text-right space-x-2">
+                        <button
+                          onClick={() => handleEdit(s)}
+                          className="text-blue-300 hover:text-blue-100 text-xs bg-blue-500/20 hover:bg-blue-500/40 px-2 py-1 rounded-full"
+                        >
+                          Edit
+                        </button>
                         <button
                           onClick={() => handleDelete(s.id)}
                           className="text-red-300 hover:text-red-100 text-xs bg-red-500/20 hover:bg-red-500/40 px-2 py-1 rounded-full"
