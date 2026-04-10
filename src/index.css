@@ -14,14 +14,19 @@
   .fullscreen-bg {
     background: url("https://raw.githubusercontent.com/kurt-dvx/DMC/refs/heads/master/DMC.jpg") no-repeat center center;
     background-color: #0b0b1b;
-    @apply relative text-white min-h-screen bg-cover;
+    height: 100vh;
+    position: relative;
+    color: white;
   }
 
-  .welcome-text {
+  .welcome {
     @apply absolute w-full text-center px-5;
     top: calc(66.6vh - 40px);
     font-size: 2rem;
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+  }
+
+  .welcome-text{
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
   }
 
   /* Buttons */

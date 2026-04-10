@@ -31,12 +31,12 @@ const Gallery = () => {
 
   // Auto-play (optional)
   useEffect(() => {
-    const timer = setInterval(nextSlide, 5000);
+    const timer = setInterval(nextSlide, 7000);
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <section className="carousel-section">
+    <section className="carousel-section bg-gray-50">
       <div className="container mx-auto px-4">
         <h3 className="text-3xl font-bold text-center mb-8">Gallery</h3>
         <div className="relative max-w-5xl mx-auto">
