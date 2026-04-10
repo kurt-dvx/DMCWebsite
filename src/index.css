@@ -1,0 +1,94 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+@layer base {
+  html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+  }
+}
+
+@layer components {
+  /* Hero */
+  .fullscreen-bg {
+    background: url("https://raw.githubusercontent.com/kurt-dvx/DMC/refs/heads/master/DMC.jpg") no-repeat center center;
+    background-color: #0b0b1b;
+    @apply relative text-white min-h-screen bg-cover;
+  }
+
+  .welcome-text {
+    @apply absolute w-full text-center px-5;
+    top: calc(66.6vh - 40px);
+    font-size: 2rem;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Buttons */
+  .btn-magenta {
+    @apply inline-block bg-[#b388fe] text-black rounded-lg px-6 py-2 text-base font-semibold transition-colors duration-300;
+  }
+  .btn-magenta:hover {
+    @apply bg-[#c400c4] text-white shadow-[0_0_0_0.25rem_rgba(196,0,196,0.5)];
+  }
+
+  /* Events */
+  .events-section {
+    background: linear-gradient(to right, #1f1c2c, #6a2c80);
+    @apply border-y border-[#444];
+  }
+
+  .day-block {
+    @apply bg-white/10 p-8 m-2.5 mb-20 rounded-xl min-h-[200px] flex flex-col justify-center min-w-[160px];
+  }
+
+  .day-header {
+    @apply font-bold py-1 mb-2.5 rounded-md text-white;
+  }
+  .mon { background-color: #9b4dca; }
+  .tue { background-color: #4d61ca; }
+  .wed { background-color: #2ac3d2; }
+  .thu { background-color: #29c27f; }
+  .fri { background-color: #a4ce3c; }
+  .sat { background-color: #f4b53f; }
+  .sun { background-color: #ef4a3c; }
+
+  .icon { @apply text-2xl mb-2.5; }
+  .mission { @apply font-bold text-base; }
+
+  /* Frosted glass */
+  .frosted-glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    @apply rounded-2xl p-8 shadow-[0_8px_32px_0_rgba(31,38,135,0.37)] border border-white/20;
+  }
+
+  /* Team */
+  .team-section {
+    background: linear-gradient(to left, #1f1c2c, #6a2c80);
+    @apply py-16 text-white;
+  }
+
+  .member-card {
+    @apply bg-white/10 rounded-xl p-5 text-center text-white transition-transform duration-300;
+  }
+  .member-card:hover { @apply -translate-y-1; }
+
+  .member-photo {
+    @apply w-20 h-20 rounded-full object-cover mb-4 mx-auto border-2 border-[#b388fe];
+  }
+
+  /* Featurette */
+  .featurette-divider { @apply my-20 border-gray-300; }
+  .featurette-heading { @apply text-4xl font-light tracking-tight; }
+  .featurette-image {
+    @apply w-full h-[350px] object-cover rounded-lg shadow-md;
+  }
+
+  /* Carousel section */
+  .carousel-section { @apply py-16 bg-gray-100; }
+
+  /* Footer */
+  footer a:hover { @apply underline text-[#b388fe]; }
+}
